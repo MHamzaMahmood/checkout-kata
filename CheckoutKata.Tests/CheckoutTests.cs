@@ -17,8 +17,16 @@ public class CheckoutTests
     }
 
     [Test]
-    public void Test1()
+    public void ScanSingleItem()
     {
-        Assert.Pass();
+        //Arrange
+        var checkout = new Checkout(_pricingRules);
+
+        //Act
+        checkout.Scan("A");
+        var total = checkout.GetTotalPrice();
+
+        //Assert
+        Assert.AreEqual(50, total);
     }
 }
