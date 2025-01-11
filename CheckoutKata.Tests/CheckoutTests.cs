@@ -27,6 +27,6 @@ public class CheckoutTests
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.AreEqual(50, total);
+        Assert.That(total, Is.EqualTo(50));
     }
 }
