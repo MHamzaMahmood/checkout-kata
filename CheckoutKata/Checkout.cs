@@ -19,7 +19,16 @@ namespace CheckoutKata
 
         public int GetTotalPrice()
         {
-            throw new NotImplementedException();
+            int totalPrice = 0;
+            foreach (var scannedItem in _scannedItems)
+            {
+                var pricingRule = _pricingRules.FirstOrDefault(pr => pr.SKU == scannedItem.SKU);
+                if (pricingRule != null)
+                {
+                    totalPrice = scannedItem.Quantity * pricingRule.UnitPrice;
+                }
+            }
+            return totalPrice;
         }
 
         public void Scan(string item)
