@@ -29,6 +29,7 @@ namespace CheckoutKata
             foreach (var scannedItem in _scannedItems)
             {
                 var pricingRule = _pricingRules.FirstOrDefault(pr => pr.SKU == scannedItem.SKU);
+
                 if (pricingRule != null)
                 {
                     if (pricingRule.SpecialQuantity != null 
@@ -53,9 +54,10 @@ namespace CheckoutKata
         public void Scan(string item)
         {
             var scannedItem = _scannedItems.FirstOrDefault(si => si.SKU == item);
-            if (!_pricingRules.Any(pr => pr.SKU == item))
+
+            if (!_pricingRules.Any(pr => pr.SKU == item) || string.IsNullOrWhiteSpace(item))
             {
-                throw new ArgumentException("Please provide a valid SKU");
+                throw new ArgumentException("Please provide a valid SKU", nameof(item));
             }
 
             if (scannedItem != null)

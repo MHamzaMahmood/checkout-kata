@@ -13,10 +13,6 @@ namespace CheckoutKata
 
         public ScannedItem(string sku)
         {
-            if (string.IsNullOrWhiteSpace(sku))
-            { 
-                throw new ArgumentNullException("Please provide a valid SKU", nameof(sku)); 
-            }
             SKU = sku;
             Quantity = 1;
         }
