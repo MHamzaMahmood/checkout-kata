@@ -21,7 +21,7 @@ public class CheckoutTests
     [TestCase("B", 30)]
     [TestCase("C", 20)]
     [TestCase("D", 15)]
-    public void ScanSingleItem(string item, int expectedTotal)
+    public void Scan_SingleItem_ReturnsCorrectTotalPrice(string item, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -41,7 +41,7 @@ public class CheckoutTests
     [TestCase("B", 3, 75)] //Special offer for two B's with one remaining at base unit price
     [TestCase("B", 4, 90)] //Duplicate offer for B's
     [TestCase("C", 3, 60)] //Multiple base unit price C's
-    public void ScanMultipleMatchingItems(string item, int quantity, int expectedTotal)
+    public void Scan_MultipleMatchingItems_ReturnsCorrectTotalPrice(string item, int quantity, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -62,7 +62,7 @@ public class CheckoutTests
     [TestCase(new string[] { "A", "B", "C", "D" }, 115)] //One of each item at base unit price
     [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)] //Two A's at base price, special offer for B's, one C at base price
     [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)] //Special offer for A's and special offer for B's
-    public void ScanMultipleMixedItems(string[] items, int expectedTotal)
+    public void Scan_MultipleMixedItems_ReturnsCorrectTotalPrice(string[] items, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -81,7 +81,7 @@ public class CheckoutTests
     [Test]
     [TestCase("")]
     [TestCase("Z")]
-    public void ScanInvalidItemSKU(string invalidSku)
+    public void Scan_InvalidItemSKU_ThrowsArgumentExceptionWithCorrectMessage(string invalidSku)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -93,7 +93,7 @@ public class CheckoutTests
     }
 
     [Test]
-    public void GetTotalOfEmptyBasket()
+    public void GetTotalPrice_WhenBasketIsEmpty_ThrowsArgumentExceptionWithCorrectMessage()
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
