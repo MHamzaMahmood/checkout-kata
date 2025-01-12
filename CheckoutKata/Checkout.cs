@@ -20,6 +20,12 @@ namespace CheckoutKata
         public int GetTotalPrice()
         {
             int totalPrice = 0;
+
+            if (_scannedItems.Count == 0)
+            {
+                throw new ArgumentException("Please scan at least one item", nameof(_scannedItems));
+            }
+
             foreach (var scannedItem in _scannedItems)
             {
                 var pricingRule = _pricingRules.FirstOrDefault(pr => pr.SKU == scannedItem.SKU);
