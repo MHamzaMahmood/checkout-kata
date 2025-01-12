@@ -11,7 +11,7 @@ namespace CheckoutKata
         public string SKU { get; set; }
         public int Quantity { get; set; }
 
-        public ScannedItem(string sku, int quantity)
+        public ScannedItem(string sku)
         {
             if (string.IsNullOrWhiteSpace(sku))
             { 
