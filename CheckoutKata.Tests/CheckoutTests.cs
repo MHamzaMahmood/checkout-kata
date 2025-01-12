@@ -179,10 +179,11 @@ public class CheckoutTests
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
+        var expectedMessage = "Please provide a valid SKU";
 
         //Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
-        Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
+        Assert.That(exception.Message, Does.Contain(expectedMessage));
     }
 
     [Test]
@@ -190,9 +191,10 @@ public class CheckoutTests
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
+        var expectedMessage = "Please scan at least one item";
 
         //Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => checkout.GetTotalPrice());
-        Assert.That(exception.Message, Does.Contain("Please scan at least one item"));
+        Assert.That(exception.Message, Does.Contain(expectedMessage));
     }
 }
