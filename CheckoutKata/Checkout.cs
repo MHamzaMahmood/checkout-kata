@@ -47,6 +47,10 @@ namespace CheckoutKata
         public void Scan(string item)
         {
             var scannedItem = _scannedItems.FirstOrDefault(si => si.SKU == item);
+            if (!_pricingRules.Any(pr => pr.SKU == item))
+            {
+                throw new ArgumentException("Please provide a valid SKU");
+            }
 
             if (scannedItem != null)
             {
