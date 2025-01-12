@@ -29,4 +29,19 @@ public class CheckoutTests
         //Assert
         Assert.That(total, Is.EqualTo(50));
     }
+
+    [Test]
+    public void ScanMultipleItemsWithNoOffer()
+    {
+        //Arrange
+        var checkout = new Checkout(_pricingRules);
+
+        //Act
+        checkout.Scan("A");
+        checkout.Scan("A");
+        var total = checkout.GetTotalPrice();
+
+        //Assert
+        Assert.That(total, Is.EqualTo(100));
+    }
 }
