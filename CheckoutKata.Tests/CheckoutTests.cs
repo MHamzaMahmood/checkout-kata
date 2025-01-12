@@ -35,18 +35,22 @@ public class CheckoutTests
     }
 
     [Test]
-    public void ScanMultipleItemsWithNoOffer()
+    [TestCase("A", 2, 100)]
+    [TestCase("C", 3, 60)]
+    public void ScanMultipleItemsWithNoOffer(string item, int quantity, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
-        checkout.Scan("A");
+        for (int i = 0; i < quantity; i++)
+        {
+            checkout.Scan(item);
+        }
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(100));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
