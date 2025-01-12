@@ -164,25 +164,16 @@ public class CheckoutTests
     }
 
     [Test]
-    public void TestInvalidEmptySKU()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan(""));
-        Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
-    }
-
-    [Test]
-    public void ScanInvalidItemSKU()
+    [TestCase("")]
+    [TestCase("Z")]
+    public void ScanInvalidItemSKU(string invalidSku)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
         var expectedMessage = "Please provide a valid SKU";
 
         //Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
+        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan(invalidSku));
         Assert.That(exception.Message, Does.Contain(expectedMessage));
     }
 
