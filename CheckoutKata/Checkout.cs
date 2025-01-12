@@ -25,7 +25,20 @@ namespace CheckoutKata
                 var pricingRule = _pricingRules.FirstOrDefault(pr => pr.SKU == scannedItem.SKU);
                 if (pricingRule != null)
                 {
-                    totalPrice += scannedItem.Quantity * pricingRule.UnitPrice;
+                    if (pricingRule.SpecialQuantity != null 
+                        && pricingRule.SpecialPrice != null
+                        && scannedItem.Quantity >= pricingRule.SpecialQuantity.Value)
+                    {
+                        int qualifyingItems = scannedItem.Quantity / pricingRule.SpecialQuantity.Value;
+                        int remainingItems = scannedItem.Quantity % pricingRule.SpecialQuantity.Value;
+
+                        totalPrice += qualifyingItems * pricingRule.SpecialPrice.Value;
+                        totalPrice += remainingItems * pricingRule.UnitPrice;
+                    }
+                    else
+                    {
+                        totalPrice += scannedItem.Quantity * pricingRule.UnitPrice;
+                    }
                 }
             }
             return totalPrice;
