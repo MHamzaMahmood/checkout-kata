@@ -17,182 +17,90 @@ public class CheckoutTests
     }
 
     [Test]
-    public void ScanSingleItem()
+    [TestCase("A", 50)]
+    [TestCase("B", 30)]
+    [TestCase("C", 20)]
+    [TestCase("D", 15)]
+    public void Scan_SingleItem_ReturnsCorrectTotalPrice(string item, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
+        checkout.Scan(item);
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(50));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
-    public void ScanMultipleItemsWithNoOffer()
+    [TestCase("A", 2, 100)] //Two base unit price A's
+    [TestCase("A", 3, 130)] //Special offer for A's
+    [TestCase("B", 2, 45)] //Special offer for B's
+    [TestCase("B", 3, 75)] //Special offer for two B's with one remaining at base unit price
+    [TestCase("B", 4, 90)] //Duplicate offer for B's
+    [TestCase("C", 3, 60)] //Multiple base unit price C's
+    public void Scan_MultipleMatchingItems_ReturnsCorrectTotalPrice(string item, int quantity, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
-        checkout.Scan("A");
+        for (int i = 0; i < quantity; i++)
+        {
+            checkout.Scan(item);
+        }
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(100));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
-    public void ScanEveryAvailableItemWithNoOffer()
+    [TestCase(new string[] { "A", "B", "A" }, 130)] //Two base unit price A's and one base unit price B
+    [TestCase(new string[] { "A", "B", "C", "D" }, 115)] //One of each item at base unit price
+    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)] //Two A's at base price, special offer for B's, one C at base price
+    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)] //Special offer for A's and special offer for B's
+    public void Scan_MultipleMixedItems_ReturnsCorrectTotalPrice(string[] items, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("C");
-        checkout.Scan("D");
+        for (int i = 0; i < items.Length; i++)
+        {
+            checkout.Scan(items[i]);
+        }
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(115));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
-    public void ScanMultipleItemsWithOffer()
+    [TestCase("")]
+    [TestCase("Z")]
+    public void Scan_InvalidItemSKU_ThrowsArgumentExceptionWithCorrectMessage(string invalidSku)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("A");
-        checkout.Scan("A");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(130));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithNoOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(130));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        checkout.Scan("C");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(165));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithMultipleOffers()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        checkout.Scan("A");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(175));
-    }
-
-    [Test]
-    public void ScanMultipleItemsWithDuplicateOffers()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("B");
-        checkout.Scan("B");
-        checkout.Scan("B");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(90));
-    }
-
-    [Test]
-    public void ScanMultipleMatchingItemsWithSingleOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("B");
-        checkout.Scan("B");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(75));
-    }
-
-    [Test]
-    public void TestInvalidEmptySKU()
-    {
-        //Arrange
-        var emptySku = "";
+        var expectedMessage = "Please provide a valid SKU";
 
         //Act & Assert
-        var exception = Assert.Throws<ArgumentNullException>(() => new ScannedItem(emptySku));
-        Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
+        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan(invalidSku));
+        Assert.That(exception.Message, Does.Contain(expectedMessage));
     }
 
     [Test]
-    public void ScanInvalidItemSKU()
+    public void GetTotalPrice_WhenBasketIsEmpty_ThrowsArgumentExceptionWithCorrectMessage()
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
-
-        //Act & Assert
-        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
-        Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
-    }
-
-    [Test]
-    public void GetTotalOfEmptyBasket()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
+        var expectedMessage = "Please scan at least one item";
 
         //Act & Assert
         var exception = Assert.Throws<ArgumentException>(() => checkout.GetTotalPrice());
-        Assert.That(exception.Message, Does.Contain("Please scan at least one item"));
+        Assert.That(exception.Message, Does.Contain(expectedMessage));
     }
 }
