@@ -173,4 +173,15 @@ public class CheckoutTests
         var exception = Assert.Throws<ArgumentNullException>(() => new ScannedItem(emptySku));
         Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
     }
+
+    [Test]
+    public void ScanInvalidItemSKU()
+    {
+        //Arrange
+        var checkout = new Checkout(_pricingRules);
+
+        //Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
+        Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
+    }
 }
