@@ -9,10 +9,12 @@ namespace CheckoutKata
     public class Checkout : ICheckout
     {
         private readonly List<PricingRule> _pricingRules;
+        private readonly List<ScannedItem> _scannedItems;
 
         public Checkout(List<PricingRule> pricingRules)
         {
             _pricingRules = pricingRules;
+            _scannedItems = new List<ScannedItem>();
         }
 
         public int GetTotalPrice()
