@@ -24,7 +24,16 @@ namespace CheckoutKata
 
         public void Scan(string item)
         {
-            throw new NotImplementedException();
+            var scannedItem = _scannedItems.FirstOrDefault(si => si.SKU == item);
+
+            if (scannedItem != null)
+            {
+                scannedItem.Quantity += 1;   
+            }
+            else
+            {
+                _scannedItems.Add(new ScannedItem(item));
+            }
         }
     }
 }
