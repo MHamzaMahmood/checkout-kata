@@ -17,17 +17,21 @@ public class CheckoutTests
     }
 
     [Test]
-    public void ScanSingleItem()
+    [TestCase("A", 50)]
+    [TestCase("B", 30)]
+    [TestCase("C", 20)]
+    [TestCase("D", 15)]
+    public void ScanSingleItem(string item, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
+        checkout.Scan(item);
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(50));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
