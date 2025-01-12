@@ -37,7 +37,9 @@ public class CheckoutTests
     [Test]
     [TestCase("A", 2, 100)]
     [TestCase("C", 3, 60)]
-    public void ScanMultipleItemsWithNoOffer(string item, int quantity, int expectedTotal)
+    [TestCase("B", 2, 45)]
+    [TestCase("A", 3, 130)]
+    public void ScanMultipleMatchingItems(string item, int quantity, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -68,22 +70,6 @@ public class CheckoutTests
 
         //Assert
         Assert.That(total, Is.EqualTo(115));
-    }
-
-    [Test]
-    public void ScanMultipleItemsWithOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("A");
-        checkout.Scan("A");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(130));
     }
 
     [Test]
