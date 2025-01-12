@@ -46,6 +46,22 @@ public class CheckoutTests
     }
 
     [Test]
+    public void ScanMultipleItemsWithOffer()
+    {
+        //Arrange
+        var checkout = new Checkout(_pricingRules);
+
+        //Act
+        checkout.Scan("A");
+        checkout.Scan("A");
+        checkout.Scan("A");
+        var total = checkout.GetTotalPrice();
+
+        //Assert
+        Assert.That(total, Is.EqualTo(130));
+    }
+
+    [Test]
     public void ScanMultipleMixedItemsWithNoOffer()
     {
         //Arrange
