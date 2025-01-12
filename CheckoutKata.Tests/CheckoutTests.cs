@@ -184,4 +184,15 @@ public class CheckoutTests
         var exception = Assert.Throws<ArgumentException>(() => checkout.Scan("Z"));
         Assert.That(exception.Message, Does.Contain("Please provide a valid SKU"));
     }
+
+    [Test]
+    public void GetTotalOfEmptyBasket()
+    {
+        //Arrange
+        var checkout = new Checkout(_pricingRules);
+
+        //Act & Assert
+        var exception = Assert.Throws<ArgumentException>(() => checkout.GetTotalPrice());
+        Assert.That(exception.Message, Does.Contain("Please scan at least one item"));
+    }
 }
