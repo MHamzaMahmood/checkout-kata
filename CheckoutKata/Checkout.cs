@@ -25,7 +25,7 @@ namespace CheckoutKata
                 var pricingRule = _pricingRules.FirstOrDefault(pr => pr.SKU == scannedItem.SKU);
                 if (pricingRule != null)
                 {
-                    totalPrice = scannedItem.Quantity * pricingRule.UnitPrice;
+                    totalPrice += scannedItem.Quantity * pricingRule.UnitPrice;
                 }
             }
             return totalPrice;
