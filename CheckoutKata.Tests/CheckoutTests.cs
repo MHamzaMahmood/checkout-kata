@@ -58,72 +58,24 @@ public class CheckoutTests
     }
 
     [Test]
-    public void ScanEveryAvailableItemWithNoOffer()
+    [TestCase(new string[] { "A", "B", "A" }, 130)]
+    [TestCase(new string[] { "A", "B", "C", "D" }, 115)]
+    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)]
+    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)]
+    public void ScanMultipleMixedItems(string[] items, int expectedTotal)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("C");
-        checkout.Scan("D");
+        for (int i = 0; i < items.Length; i++)
+        {
+            checkout.Scan(items[i]);
+        }
         var total = checkout.GetTotalPrice();
 
         //Assert
-        Assert.That(total, Is.EqualTo(115));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithNoOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(130));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithOffer()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        checkout.Scan("C");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(165));
-    }
-
-    [Test]
-    public void ScanMultipleMixedItemsWithMultipleOffers()
-    {
-        //Arrange
-        var checkout = new Checkout(_pricingRules);
-
-        //Act
-        checkout.Scan("A");
-        checkout.Scan("B");
-        checkout.Scan("A");
-        checkout.Scan("A");
-        checkout.Scan("B");
-        var total = checkout.GetTotalPrice();
-
-        //Assert
-        Assert.That(total, Is.EqualTo(175));
+        Assert.That(total, Is.EqualTo(expectedTotal));
     }
 
     [Test]
