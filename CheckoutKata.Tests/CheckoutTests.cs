@@ -35,12 +35,12 @@ public class CheckoutTests
     }
 
     [Test]
-    [TestCase("A", 2, 100)]
-    [TestCase("A", 3, 130)]
-    [TestCase("B", 2, 45)]
-    [TestCase("B", 3, 75)]
-    [TestCase("B", 4, 90)]
-    [TestCase("C", 3, 60)]
+    [TestCase("A", 2, 100)] //Two base unit price A's
+    [TestCase("A", 3, 130)] //Special offer for A's
+    [TestCase("B", 2, 45)] //Special offer for B's
+    [TestCase("B", 3, 75)] //Special offer for two B's with one remaining at base unit price
+    [TestCase("B", 4, 90)] //Duplicate offer for B's
+    [TestCase("C", 3, 60)] //Multiple base unit price C's
     public void ScanMultipleMatchingItems(string item, int quantity, int expectedTotal)
     {
         //Arrange
@@ -58,10 +58,10 @@ public class CheckoutTests
     }
 
     [Test]
-    [TestCase(new string[] { "A", "B", "A" }, 130)]
-    [TestCase(new string[] { "A", "B", "C", "D" }, 115)]
-    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)]
-    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)]
+    [TestCase(new string[] { "A", "B", "A" }, 130)] //Two base unit price A's and one base unit price B
+    [TestCase(new string[] { "A", "B", "C", "D" }, 115)] //One of each item at base unit price
+    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)] //Two A's at base price, special offer for B's, one C at base price
+    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)] //Special offer for A's and special offer for B's
     public void ScanMultipleMixedItems(string[] items, int expectedTotal)
     {
         //Arrange
