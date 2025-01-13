@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CheckoutKata
+﻿namespace CheckoutKata
 {
     public class Checkout : ICheckout
     {
@@ -32,7 +26,7 @@ namespace CheckoutKata
 
                 if (pricingRule != null)
                 {
-                    if (pricingRule.SpecialQuantity != null 
+                    if (pricingRule.SpecialQuantity != null
                         && pricingRule.SpecialPrice != null
                         && scannedItem.Quantity >= pricingRule.SpecialQuantity.Value)
                     {
@@ -62,7 +56,7 @@ namespace CheckoutKata
 
             if (scannedItem != null)
             {
-                scannedItem.Quantity += 1;   
+                scannedItem.Quantity += 1;
             }
             else
             {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CheckoutKata
+﻿namespace CheckoutKata
 {
     public class PricingRule
     {
@@ -13,7 +7,7 @@ namespace CheckoutKata
         public int? SpecialQuantity { get; }
         public int? SpecialPrice { get; }
 
-        public PricingRule(string sku, int unitPrice, int? specialQuantity = null, int? specialPrice = null) 
+        public PricingRule(string sku, int unitPrice, int? specialQuantity = null, int? specialPrice = null)
         {
             SKU = sku;
             UnitPrice = unitPrice;
