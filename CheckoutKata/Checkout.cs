@@ -10,11 +10,17 @@ namespace CheckoutKata
     {
         private readonly List<PricingRule> _pricingRules;
         private readonly List<ScannedItem> _scannedItems;
+        private bool _bagsRequired = false;
 
         public Checkout(List<PricingRule> pricingRules)
         {
             _pricingRules = pricingRules;
             _scannedItems = new List<ScannedItem>();
+        }
+
+        public void AddBags(bool bagsRequired)
+        {
+            _bagsRequired = bagsRequired;
         }
 
         public int GetTotalPrice()
@@ -48,6 +54,30 @@ namespace CheckoutKata
                     }
                 }
             }
+
+            if (_bagsRequired == true)
+            {
+                int bagsRequired = 0;
+                int totalItemCount = _scannedItems.Sum(si => si.Quantity);
+
+                if (totalItemCount > 5)
+                {
+                    int fullBags = totalItemCount / 5;
+                    int remainingItems = totalItemCount % 5;
+
+                    bagsRequired += fullBags;
+                    if (remainingItems > 0)
+                    {
+                        bagsRequired += 1;
+                    }
+                }
+                else
+                {
+                    bagsRequired = 1;
+                }
+                totalPrice += bagsRequired * 5;
+            }
+
             return totalPrice;
         }
 
