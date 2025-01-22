@@ -17,17 +17,22 @@ public class CheckoutTests
     }
 
     [Test]
-    [TestCase("A", 50)]
-    [TestCase("B", 30)]
-    [TestCase("C", 20)]
-    [TestCase("D", 15)]
-    public void Scan_SingleItem_ReturnsCorrectTotalPrice(string item, int expectedTotal)
+    [TestCase("A", 50, false)]
+    [TestCase("B", 30, false)]
+    [TestCase("C", 20, false)]
+    [TestCase("D", 15, false)]
+    [TestCase("A", 55, true)]
+    [TestCase("B", 35, true)]
+    [TestCase("C", 25, true)]
+    [TestCase("D", 20, true)]
+    public void Scan_SingleItem_ReturnsCorrectTotalPrice(string item, int expectedTotal, bool bagsRequired)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
 
         //Act
         checkout.Scan(item);
+        checkout.AddBags(bagsRequired);
         var total = checkout.GetTotalPrice();
 
         //Assert
@@ -35,13 +40,20 @@ public class CheckoutTests
     }
 
     [Test]
-    [TestCase("A", 2, 100)] //Two base unit price A's
-    [TestCase("A", 3, 130)] //Special offer for A's
-    [TestCase("B", 2, 45)] //Special offer for B's
-    [TestCase("B", 3, 75)] //Special offer for two B's with one remaining at base unit price
-    [TestCase("B", 4, 90)] //Duplicate offer for B's
-    [TestCase("C", 3, 60)] //Multiple base unit price C's
-    public void Scan_MultipleMatchingItems_ReturnsCorrectTotalPrice(string item, int quantity, int expectedTotal)
+    [TestCase("A", 2, 100, false)] //Two base unit price A's
+    [TestCase("A", 3, 130, false)] //Special offer for A's
+    [TestCase("B", 2, 45, false)] //Special offer for B's
+    [TestCase("B", 3, 75, false)] //Special offer for two B's with one remaining at base unit price
+    [TestCase("B", 4, 90, false)] //Duplicate offer for B's
+    [TestCase("C", 3, 60, false)] //Multiple base unit price C's
+    [TestCase("A", 2, 105, true)] //Two base unit price A's with bags
+    [TestCase("A", 3, 135, true)] //Special offer for A's with bags
+    [TestCase("B", 2, 50, true)] //Special offer for B's with bags
+    [TestCase("B", 3, 80, true)] //Special offer for two B's with one remaining at base unit price with bags
+    [TestCase("B", 4, 95, true)] //Duplicate offer for B's with bags
+    [TestCase("C", 8, 170, true)] //Multiple base unit price C's with bags
+    [TestCase("D", 12, 195, true)] //Multiple base unit price D's with bags
+    public void Scan_MultipleMatchingItems_ReturnsCorrectTotalPrice(string item, int quantity, int expectedTotal, bool bagsRequired)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -51,6 +63,7 @@ public class CheckoutTests
         {
             checkout.Scan(item);
         }
+        checkout.AddBags(bagsRequired);
         var total = checkout.GetTotalPrice();
 
         //Assert
@@ -58,11 +71,15 @@ public class CheckoutTests
     }
 
     [Test]
-    [TestCase(new string[] { "A", "B", "A" }, 130)] //Two base unit price A's and one base unit price B
-    [TestCase(new string[] { "A", "B", "C", "D" }, 115)] //One of each item at base unit price
-    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165)] //Two A's at base price, special offer for B's, one C at base price
-    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175)] //Special offer for A's and special offer for B's
-    public void Scan_MultipleMixedItems_ReturnsCorrectTotalPrice(string[] items, int expectedTotal)
+    [TestCase(new string[] { "A", "B", "A" }, 130, false)] //Two base unit price A's and one base unit price B
+    [TestCase(new string[] { "A", "B", "C", "D" }, 115, false)] //One of each item at base unit price
+    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 165, false)] //Two A's at base price, special offer for B's, one C at base price
+    [TestCase(new string[] { "A", "B", "A", "A", "B" }, 175, false)] //Special offer for A's and special offer for B's
+    [TestCase(new string[] { "A", "B", "A" }, 135, true)] //Two base unit price A's and one base unit price B with bags
+    [TestCase(new string[] { "A", "B", "C", "D" }, 120, true)] //One of each item at base unit price with bags
+    [TestCase(new string[] { "A", "B", "A", "C", "B" }, 170, true)] //Two A's at base price, special offer for B's, one C at base price with bags
+    [TestCase(new string[] { "A", "B", "A", "A", "B", "C" }, 205, true)] //Special offer for A's and special offer for B's with bags
+    public void Scan_MultipleMixedItems_ReturnsCorrectTotalPrice(string[] items, int expectedTotal, bool bagsRequired)
     {
         //Arrange
         var checkout = new Checkout(_pricingRules);
@@ -72,6 +89,7 @@ public class CheckoutTests
         {
             checkout.Scan(items[i]);
         }
+        checkout.AddBags(bagsRequired);
         var total = checkout.GetTotalPrice();
 
         //Assert
